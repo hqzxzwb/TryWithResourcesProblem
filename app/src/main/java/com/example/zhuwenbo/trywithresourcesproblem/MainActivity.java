@@ -20,13 +20,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             reproduceProblem();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     // This works perfectly on API 19, but crashes on API < 19.
     private void reproduceProblem() throws IOException {
-        File file = new File("/sdcard/whateverfile");
+        File file = new File(getCacheDir(), "whateverfile");
+        file.getParentFile().mkdirs();
         file.createNewFile();
         try (FileOutputStream fos = new FileOutputStream(file);
              FileLock lock = fos.getChannel().lock()) {
